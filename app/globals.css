@@ -23,6 +23,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ink: var(--ink);
+  --color-destructive: var(--destructive);
   --font-sans: var(--font-sans-family);
   --font-serif: var(--font-serif-family);
   --font-mono: var(--font-mono-family);
@@ -48,6 +49,7 @@
   --input: #E4E1D8;
   --ring: #5C5A50;
   --ink: #20211D;
+  --destructive: #B0341E;
   --font-sans-family: 'Geist', 'Arial', sans-serif;
   --font-serif-family: 'DM Serif Display', Georgia, serif;
   --font-mono-family: 'Geist Mono', monospace;
