@@ -12,6 +12,8 @@ const projects = [
 export default function Page() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [hasInteracted, setHasInteracted] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [hasEnded, setHasEnded] = useState(false)
 
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
@@ -35,21 +37,27 @@ export default function Page() {
         </div>
 
          <div className="mt-4 w-full max-w-5xl overflow-hidden border border-border bg-ink md:mt-5">
-           <div className="relative aspect-video max-h-[54svh] w-full overflow-hidden group/video">
-             <video ref={videoRef} src="/I can give you value .mp4" className="absolute inset-0 h-full w-full object-cover" playsInline onEnded={() => videoRef.current?.pause()} />
+           <div className="relative aspect-video max-h-[54svh] w-full overflow-hidden">
+             <video ref={videoRef} src="/I can give you value .mp4" poster="/thumbnail.png" className="absolute inset-0 h-full w-full object-cover" playsInline onPlay={() => { setIsPlaying(true); setHasEnded(false) }} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setHasEnded(true) }} />
              {!hasInteracted && (
                <button type="button" aria-label="Play showreel" onClick={() => { const v = videoRef.current; if (v) { v.play(); setHasInteracted(true) } }} className="absolute inset-0 z-10 flex items-center justify-center text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background">
-                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_35%,#c8bda7_0%,transparent_22%),linear-gradient(125deg,#252921_0%,#6c7564_45%,#b6a991_100%)]" />
-                 <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(250,249,246,.22)_1px,transparent_1px),linear-gradient(90deg,rgba(250,249,246,.22)_1px,transparent_1px)] [background-size:48px_48px]" />
-                 <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-background/70 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
-                 <div className="absolute bottom-5 left-5 max-w-sm text-background md:bottom-8 md:left-8"><p className="font-serif text-3xl tracking-[-0.04em] md:text-5xl">I can give you value.</p><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-background/70">Play 01:42</p></div>
+                 <div className="absolute inset-0 bg-black/20" />
+                 <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/90 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
+                 <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="font-serif text-3xl tracking-[-0.04em] md:text-5xl">I can give you value.</p><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
                  <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
-                 <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-background/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
+                 <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
                </button>
              )}
-             <button type="button" aria-label="Replay showreel" onClick={() => { const v = videoRef.current; if (v) { v.currentTime = 0; v.play() } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground opacity-0 transition-all duration-300 group-hover/video:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
-               <Play size={21} fill="currentColor" />
-             </button>
+             {hasInteracted && !isPlaying && (
+               <button type="button" aria-label={hasEnded ? 'Replay showreel' : 'Play showreel'} onClick={() => { const v = videoRef.current; if (v) { if (hasEnded) v.currentTime = 0; v.play() } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
+                 <Play size={21} fill="currentColor" />
+               </button>
+             )}
+             {isPlaying && (
+               <button type="button" aria-label="Pause showreel" onClick={() => videoRef.current?.pause()} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary/80 text-primary-foreground backdrop-blur-sm transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
+                 <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
+               </button>
+             )}
            </div>
          </div>
 
