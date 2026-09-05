@@ -94,6 +94,13 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
       if (!form.email.trim()) next.email = 'Required.'
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = 'Looks off.'
       if (!form.phone.trim()) next.phone = 'Required.'
+      else {
+        const digits = form.phone.replace(/\D/g, '')
+        const local = digits.startsWith('251') ? digits.slice(3) : digits
+        if (local.length !== 10 || !/^(09|07)/.test(local)) {
+          next.phone = 'Use 10 digits, starting with 09 or 07.'
+        }
+      }
     } else if (s === 2) {
       if (!form.industry) next.industry = 'Pick one.'
       if (!form.brandName.trim()) next.brandName = 'Required.'

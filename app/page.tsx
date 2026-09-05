@@ -46,7 +46,7 @@ export default function Page() {
                <button type="button" aria-label="Play showreel" onClick={() => { const v = videoRef.current; if (v) { v.play(); setHasInteracted(true) } }} className="absolute inset-0 z-10 flex items-center justify-center text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background">
                  <div className="absolute inset-0 bg-black/20" />
                  <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/90 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
-                 <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="font-serif text-3xl tracking-[-0.04em] md:text-5xl">I can give you value.</p><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
+                 <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
                  <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
                  <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
                </button>
@@ -68,7 +68,6 @@ export default function Page() {
           <StartProjectForm>
             <a className="group inline-flex min-w-56 items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5">Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
           </StartProjectForm>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="flex -space-x-2" aria-hidden="true"><span className="flex size-7 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium text-foreground">AM</span><span className="flex size-7 items-center justify-center rounded-full border-2 border-background bg-foreground text-[10px] font-medium text-background">JR</span><span className="flex size-7 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium text-foreground">SK</span></span><span>Trusted by teams who care about the details.</span></div>
         </div>
       </section>
 
