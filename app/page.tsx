@@ -2,6 +2,7 @@
 
 import { ArrowUpRight, Play, Plus } from 'lucide-react'
 import { useRef, useState } from 'react'
+import StartProjectForm from './start-project-form'
 
 const projects = [
   { name: 'Aster House', type: 'Brand platform · Hospitality', year: '2025', tone: 'from-[#7a8174] via-[#b4b3a1] to-[#ded5c1]' },
@@ -22,15 +23,17 @@ export default function Page() {
           <a className="transition-colors hover:text-foreground" href="#approach">Approach</a>
           <a className="transition-colors hover:text-foreground" href="#studio">Studio</a>
         </nav>
-        <a href="#contact" className="group flex items-center gap-2 rounded-full border border-foreground bg-foreground px-4 py-2 text-sm text-background transition-transform hover:-translate-y-0.5">
-          Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </a>
+        <StartProjectForm>
+          <a className="group flex items-center gap-2 rounded-full border border-foreground bg-foreground px-4 py-2 text-sm text-background transition-transform hover:-translate-y-0.5">
+            Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+        </StartProjectForm>
       </header>
 
       <section id="top" className="mx-auto flex min-h-[calc(100svh-80px)] max-w-7xl flex-col items-center px-5 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6 lg:px-12">
         <div className="flex max-w-3xl flex-col items-center text-center">
-          <h1 className="max-w-3xl font-serif text-3xl leading-[0.94] tracking-[-0.06em] text-balance sm:text-4xl md:text-5xl lg:text-6xl">Same quality.<br /><em className="text-muted-foreground">10x less price.</em></h1>
-          <p className="mt-3 max-w-2xl text-base font-medium leading-6 text-foreground md:text-lg">We build the kind of digital experiences usually reserved for companies with much bigger budgets.</p>
+          <h1 className="max-w-3xl font-serif text-3xl leading-[0.94] tracking-[-0.06em] text-balance sm:text-4xl md:text-5xl lg:text-6xl">እንከን የለሽ ጥራት፡ <em className="text-muted-foreground">የማይታመን ዋጋ</em></h1>
+          <p className="mt-3 max-w-2xl text-base font-medium leading-6 text-foreground md:text-lg">We build your websites in 48 hours. If you don't love it, you don't pay.</p>
           <p className="mt-1 max-w-2xl text-xs leading-5 text-muted-foreground md:text-sm">Senior design and development, without the agency overhead.</p>
         </div>
 
@@ -54,7 +57,9 @@ export default function Page() {
          </div>
 
         <div className="mt-3 flex w-full max-w-5xl flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <a href="#contact" className="group inline-flex min-w-56 items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5">Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
+          <StartProjectForm>
+            <a className="group inline-flex min-w-56 items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5">Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
+          </StartProjectForm>
           <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="flex -space-x-2" aria-hidden="true"><span className="flex size-7 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium text-foreground">AM</span><span className="flex size-7 items-center justify-center rounded-full border-2 border-background bg-foreground text-[10px] font-medium text-background">JR</span><span className="flex size-7 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px] font-medium text-foreground">SK</span></span><span>Trusted by teams who care about the details.</span></div>
         </div>
       </section>
