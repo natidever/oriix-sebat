@@ -220,9 +220,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                         type="button"
                         onClick={() => step > idx && setStep(idx)}
                         disabled={step < idx}
-                        className={`flex w-full items-baseline gap-4 border-t border-border py-4 text-left transition-colors ${
-                          active ? 'text-foreground' : 'text-muted-foreground'
-                        } ${step > idx ? 'hover:text-foreground' : ''}`}
+                        className={`flex w-full items-baseline gap-4 border-t border-border py-4 text-left transition-colors ${active ? 'text-foreground' : 'text-muted-foreground'
+                          } ${step > idx ? 'hover:text-foreground' : ''}`}
                       >
                         <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
                           {done ? '✓' : p.num}
@@ -301,7 +300,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                 inputMode="tel"
                                 value={form.phone}
                                 onChange={(e) => update('phone', e.target.value)}
-                                placeholder="+251 9.. .. .. .."
+                                placeholder="09.. .. .. .."
                                 className={inputClass(!!errors.phone)}
                               />
                             </Field>
@@ -336,11 +335,10 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                     key={ind}
                                     type="button"
                                     onClick={() => update('industry', ind)}
-                                    className={`rounded-full border px-4 py-2 text-xs transition-colors ${
-                                      active
+                                    className={`rounded-full border px-4 py-2 text-xs transition-colors ${active
                                         ? 'border-foreground bg-foreground text-background'
                                         : 'border-border bg-background text-foreground hover:border-foreground'
-                                    }`}
+                                      }`}
                                   >
                                     {ind}
                                   </button>
@@ -411,22 +409,20 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                 <button
                                   type="button"
                                   onClick={() => update('detailsMode', 'text')}
-                                  className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-xs transition-colors ${
-                                    form.detailsMode === 'text'
+                                  className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-xs transition-colors ${form.detailsMode === 'text'
                                       ? 'bg-foreground text-background'
                                       : 'bg-background text-foreground hover:bg-secondary'
-                                  }`}
+                                    }`}
                                 >
                                   <FileText size={13} /> Write it
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => update('detailsMode', 'file')}
-                                  className={`flex flex-1 items-center justify-center gap-2 border-l border-border px-4 py-3 text-xs transition-colors ${
-                                    form.detailsMode === 'file'
+                                  className={`flex flex-1 items-center justify-center gap-2 border-l border-border px-4 py-3 text-xs transition-colors ${form.detailsMode === 'file'
                                       ? 'bg-foreground text-background'
                                       : 'bg-background text-foreground hover:bg-secondary'
-                                  }`}
+                                    }`}
                                 >
                                   <Upload size={13} /> Upload PDF
                                 </button>
@@ -517,9 +513,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
 }
 
 function inputClass(hasError: boolean) {
-  return `w-full border bg-secondary/30 px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:bg-background focus:outline-none transition-colors ${
-    hasError ? 'border-destructive' : 'border-border'
-  }`
+  return `w-full border bg-secondary/30 px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:bg-background focus:outline-none transition-colors ${hasError ? 'border-destructive' : 'border-border'
+    }`
 }
 
 function Field({
@@ -592,9 +587,8 @@ function Segmented({
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`px-4 py-3 text-sm transition-colors ${
-              active ? 'bg-foreground text-background' : 'bg-background text-foreground hover:bg-secondary'
-            } ${i > 0 ? 'border-t border-border sm:border-l sm:border-t-0' : ''}`}
+            className={`px-4 py-3 text-sm transition-colors ${active ? 'bg-foreground text-background' : 'bg-background text-foreground hover:bg-secondary'
+              } ${i > 0 ? 'border-t border-border sm:border-l sm:border-t-0' : ''}`}
           >
             {opt.label}
           </button>
@@ -656,11 +650,10 @@ function DropZone({
           onDragging(false)
           handleFiles(e.dataTransfer.files)
         }}
-        className={`flex w-full flex-col items-center justify-center gap-3 border border-dashed px-6 py-12 text-center transition-colors ${
-          isDragging
+        className={`flex w-full flex-col items-center justify-center gap-3 border border-dashed px-6 py-12 text-center transition-colors ${isDragging
             ? 'border-foreground bg-secondary'
             : 'border-border bg-background hover:border-foreground'
-        }`}
+          }`}
       >
         <Upload size={18} className="text-muted-foreground" />
         {file ? (

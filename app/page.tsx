@@ -16,6 +16,8 @@ export default function Page() {
   const [hasInteracted, setHasInteracted] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasEnded, setHasEnded] = useState(false)
+  const [showControls, setShowControls] = useState(false)
+  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null)
 
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
@@ -40,27 +42,22 @@ export default function Page() {
           <p className="mt-1 max-w-2xl text-xs leading-5 text-muted-foreground md:text-sm">Senior design and development, without the agency overhead.</p>
         </div>
 
-         <div className="relative w-full max-w-5xl overflow-hidden border border-border bg-ink mt-4 md:mt-5 rounded-[14px]" style={{ aspectRatio: '832 / 466' }}>
-             <video ref={videoRef} src="/I can give you value .mp4" poster="/thumbnail.png" className="absolute inset-0 h-full w-full object-cover" playsInline onPlay={() => { setIsPlaying(true); setHasEnded(false) }} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setHasEnded(true) }} />
-             {!hasInteracted && (
-               <button type="button" aria-label="Play showreel" onClick={() => { const v = videoRef.current; if (v) { v.play(); setHasInteracted(true) } }} className="absolute inset-0 z-10 flex items-center justify-center text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background">
-                 <div className="absolute inset-0 bg-black/20" />
-                 <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/90 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
-                 <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
-                 <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
-                 <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
-               </button>
-             )}
-             {hasInteracted && !isPlaying && (
-               <button type="button" aria-label={hasEnded ? 'Replay showreel' : 'Play showreel'} onClick={() => { const v = videoRef.current; if (v) { if (hasEnded) v.currentTime = 0; v.play() } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
-                 <Play size={21} fill="currentColor" />
-               </button>
-             )}
-             {isPlaying && (
-               <button type="button" aria-label="Pause showreel" onClick={() => videoRef.current?.pause()} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary/80 text-primary-foreground backdrop-blur-sm transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
-                 <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
-               </button>
-             )}
+         <div className="relative w-full max-w-5xl overflow-hidden border border-border bg-ink mt-4 md:mt-5 rounded-[14px]" style={{ aspectRatio: '832 / 466' }} onMouseEnter={() => { if (controlsTimeout) clearTimeout(controlsTimeout); setShowControls(true) }} onMouseLeave={() => { if (isPlaying) setControlsTimeout(setTimeout(() => setShowControls(false), 500)) }}>
+              <video ref={videoRef} src="/I can give you value .mp4" poster="/thumbnail.png" className="absolute inset-0 h-full w-full object-cover" playsInline onPlay={() => { setIsPlaying(true); setHasEnded(false) }} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setHasEnded(true) }} />
+              {!hasInteracted && (
+                <button type="button" aria-label="Play showreel" onClick={() => { const v = videoRef.current; if (v) { v.play(); setHasInteracted(true) } }} className="absolute inset-0 z-10 flex items-center justify-center text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background">
+                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/90 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
+                  <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
+                  <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
+                  <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
+                </button>
+              )}
+              {hasInteracted && (!isPlaying || showControls) && (
+                <button type="button" aria-label={isPlaying ? 'Pause showreel' : 'Play showreel'} onClick={() => { if (isPlaying) { videoRef.current?.pause() } else { const v = videoRef.current; if (v) { if (hasEnded) v.currentTime = 0; v.play() } } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-all duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
+                  {isPlaying ? <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg> : <Play size={21} fill="currentColor" />}
+                </button>
+              )}
             </div>
 
         <div className="mt-3 flex w-full max-w-5xl flex-col items-center gap-3 sm:flex-row sm:justify-center">
