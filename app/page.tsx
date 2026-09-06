@@ -5,9 +5,10 @@ import { useRef, useState } from 'react'
 import StartProjectForm from './start-project-form'
 
 const projects = [
-  { name: 'Aster House', type: 'Brand platform · Hospitality', year: '2025', tone: 'from-[#7a8174] via-[#b4b3a1] to-[#ded5c1]' },
-  { name: 'Morrow Finance', type: 'Product design · Fintech', year: '2025', tone: 'from-[#30342e] via-[#697263] to-[#c0c5ae]' },
-  { name: 'Field Notes', type: 'E-commerce · Lifestyle', year: '2024', tone: 'from-[#be8568] via-[#dfb995] to-[#f0dcc1]' },
+  { name: 'Aaron Events', type: 'Orthodox wedding planner', year: '2025', image: '/projects/aaron-events.png', link: 'https://aaron-events.netlify.app/' },
+  { name: 'BlockBar', type: 'Rare wines and liqueurs', year: '2025', image: '/projects/black-bar.png', link: 'https://blockbar.com/' },
+  { name: 'Maraki Cleaning Service', type: 'Cleaning service for corporates and homes', year: '2024', image: '/projects/maraki-cleaning-service.png', link: 'https://maraki-cleaning.com/' },
+  { name: 'Carra Market', type: 'Lottery platform with physical prizes', year: '2025', image: '/projects/carra.png', link: 'https://carramarket.com/' },
 ]
 
 export default function Page() {
@@ -39,8 +40,7 @@ export default function Page() {
           <p className="mt-1 max-w-2xl text-xs leading-5 text-muted-foreground md:text-sm">Senior design and development, without the agency overhead.</p>
         </div>
 
-         <div className="mt-4 w-full max-w-5xl overflow-hidden border border-border bg-ink md:mt-5">
-           <div className="relative aspect-video max-h-[54svh] w-full overflow-hidden">
+         <div className="relative w-full max-w-5xl overflow-hidden border border-border bg-ink mt-4 md:mt-5 rounded-[14px]" style={{ aspectRatio: '832 / 466' }}>
              <video ref={videoRef} src="/I can give you value .mp4" poster="/thumbnail.png" className="absolute inset-0 h-full w-full object-cover" playsInline onPlay={() => { setIsPlaying(true); setHasEnded(false) }} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setHasEnded(true) }} />
              {!hasInteracted && (
                <button type="button" aria-label="Play showreel" onClick={() => { const v = videoRef.current; if (v) { v.play(); setHasInteracted(true) } }} className="absolute inset-0 z-10 flex items-center justify-center text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background">
@@ -61,8 +61,7 @@ export default function Page() {
                  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
                </button>
              )}
-           </div>
-         </div>
+            </div>
 
         <div className="mt-3 flex w-full max-w-5xl flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <StartProjectForm>
@@ -73,8 +72,8 @@ export default function Page() {
 
       <section id="work" className="border-y border-border">
         <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28 lg:px-12">
-          <div className="mb-12 flex items-end justify-between gap-6"><div><p className="label">Selected work</p><h2 className="mt-4 font-serif text-5xl tracking-[-0.06em] md:text-7xl">A few things<br /><em className="text-muted-foreground">we&apos;ve made.</em></h2></div><span className="hidden font-mono text-xs text-muted-foreground md:block">(01 — 03)</span></div>
-          <div className="grid gap-10 md:grid-cols-3">{projects.map((project, index) => <article key={project.name} className="group"><div className={`relative aspect-[4/5] overflow-hidden bg-gradient-to-br ${project.tone}`}><div className="absolute inset-6 border border-background/30"><div className="absolute bottom-5 left-5 right-5 flex justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-background/75"><span>Case study {String(index + 1).padStart(2, '0')}</span><ArrowUpRight size={14} /></div></div><div className="absolute left-1/2 top-1/2 size-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-background/40 transition-transform duration-500 group-hover:scale-125" /></div><div className="flex justify-between gap-4 pt-4 text-sm"><div><h3 className="font-medium">{project.name}</h3><p className="mt-1 text-muted-foreground">{project.type}</p></div><span className="text-muted-foreground">{project.year}</span></div></article>)}</div>
+           <div className="mb-12 flex items-end justify-between gap-6"><div><p className="label">Selected work</p><h2 className="mt-4 font-serif text-5xl tracking-[-0.06em] md:text-7xl">A few things<br /><em className="text-muted-foreground">we&apos;ve made.</em></h2></div><span className="hidden font-mono text-xs text-muted-foreground md:block">(01 — 04)</span></div>
+           <div className="grid gap-10 md:grid-cols-4">{projects.map((project, index) => <article key={project.name} className="group"><a href={project.link} target="_blank" rel="noreferrer" className="block"><div className="relative aspect-[4/5] overflow-hidden bg-muted"><img src={project.image} alt={project.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /><div className="absolute inset-6 border border-background/30"><div className="absolute bottom-5 left-5 right-5 flex justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-background/75"><span>Case study {String(index + 1).padStart(2, '0')}</span><ArrowUpRight size={14} /></div></div><div className="absolute left-1/2 top-1/2 size-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-background/40 transition-transform duration-500 group-hover:scale-125" /></div><div className="flex justify-between gap-4 pt-4 text-sm"><div><h3 className="font-medium">{project.name}</h3><p className="mt-1 text-muted-foreground">{project.type}</p></div><span className="text-muted-foreground">{project.year}</span></div></a></article>)}</div>
         </div>
       </section>
 
