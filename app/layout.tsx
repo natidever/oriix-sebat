@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: 'ሰባትAI studio — Premium digital, without the premium overhead',
   description: 'ሰባትAI studio is an independent web development and design studio creating considered digital experiences for ambitious teams.',
   generator: 'v0.app',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export const viewport: Viewport = {

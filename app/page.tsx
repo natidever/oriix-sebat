@@ -7,8 +7,8 @@ import StartProjectForm from './start-project-form'
 const projects = [
   { name: 'Aaron Events', type: 'Orthodox wedding planner', year: '2025', image: '/projects/aaron-events.png', link: 'https://aaron-events.netlify.app/' },
   { name: 'BlockBar', type: 'Rare wines and liqueurs', year: '2025', image: '/projects/black-bar.png', link: 'https://blockbar.com/' },
-  { name: 'Maraki Cleaning Service', type: 'Cleaning service for corporates and homes', year: '2024', image: '/projects/maraki-cleaning-service.png', link: 'https://maraki-cleaning.com/' },
   { name: 'Carra Market', type: 'Lottery platform with physical prizes', year: '2025', image: '/projects/carra.png', link: 'https://carramarket.com/' },
+  { name: 'Maraki Cleaning Service', type: 'Cleaning service for corporates and homes', year: '2024', image: '/projects/maraki-cleaning-service.png', link: 'https://marakicleaning.netlify.app/' },
 ]
 
 export default function Page() {
