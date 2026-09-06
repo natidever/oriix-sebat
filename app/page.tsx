@@ -42,23 +42,23 @@ export default function Page() {
           <p className="mt-1 max-w-2xl text-xs leading-5 text-muted-foreground md:text-sm">Senior design and development, without the agency overhead.</p>
         </div>
 
-         <div className="relative w-full max-w-5xl overflow-hidden border border-border bg-ink mt-4 md:mt-5 rounded-[14px]" style={{ aspectRatio: '832 / 466' }} onMouseEnter={() => { if (controlsTimeout) clearTimeout(controlsTimeout); setShowControls(true) }} onMouseLeave={() => { if (isPlaying) setControlsTimeout(setTimeout(() => setShowControls(false), 500)) }}>
-              <video ref={videoRef} src="/I can give you value .mp4" poster="/thumbnail.png" className="absolute inset-0 h-full w-full object-cover" playsInline onPlay={() => { setIsPlaying(true); setHasEnded(false) }} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setHasEnded(true) }} />
-              {!hasInteracted && (
-                <button type="button" aria-label="Play showreel" onClick={() => { const v = videoRef.current; if (v) { v.play(); setHasInteracted(true) } }} className="absolute inset-0 z-10 flex items-center justify-center text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background">
-                  <div className="absolute inset-0 bg-black/20" />
-                  <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/90 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
-                  <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
-                  <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
-                  <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
-                </button>
-              )}
-              {hasInteracted && (!isPlaying || showControls) && (
-                <button type="button" aria-label={isPlaying ? 'Pause showreel' : 'Play showreel'} onClick={() => { if (isPlaying) { videoRef.current?.pause() } else { const v = videoRef.current; if (v) { if (hasEnded) v.currentTime = 0; v.play() } } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-all duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
-                  {isPlaying ? <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg> : <Play size={21} fill="currentColor" />}
-                </button>
-              )}
-            </div>
+        <div className="relative w-full max-w-5xl overflow-hidden border border-border bg-ink mt-4 md:mt-5 rounded-[14px]" style={{ aspectRatio: '832 / 466' }} onMouseEnter={() => { if (controlsTimeout) clearTimeout(controlsTimeout); setShowControls(true) }} onMouseLeave={() => { if (isPlaying) setControlsTimeout(setTimeout(() => setShowControls(false), 500)) }}>
+          <video ref={videoRef} src="/I can give you value .mp4" poster="/thumbnail.png" className="absolute inset-0 h-full w-full object-cover" playsInline onPlay={() => { setIsPlaying(true); setHasEnded(false) }} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setHasEnded(true) }} />
+          {!hasInteracted && (
+            <button type="button" aria-label="Play showreel" onClick={() => { const v = videoRef.current; if (v) { v.play(); setHasInteracted(true) } }} className="absolute inset-0 z-10 flex items-center justify-center text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background">
+              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/90 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
+              <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
+              <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
+              <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
+            </button>
+          )}
+          {hasInteracted && (!isPlaying || showControls) && (
+            <button type="button" aria-label={isPlaying ? 'Pause showreel' : 'Play showreel'} onClick={() => { if (isPlaying) { videoRef.current?.pause() } else { const v = videoRef.current; if (v) { if (hasEnded) v.currentTime = 0; v.play() } } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-all duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
+              {isPlaying ? <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg> : <Play size={21} fill="currentColor" />}
+            </button>
+          )}
+        </div>
 
         <div className="mt-3 flex w-full max-w-5xl flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <StartProjectForm>
@@ -69,8 +69,8 @@ export default function Page() {
 
       <section id="work" className="border-y border-border">
         <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28 lg:px-12">
-           <div className="mb-12 flex items-end justify-between gap-6"><div><p className="label">Selected work</p><h2 className="mt-4 font-serif text-5xl tracking-[-0.06em] md:text-7xl">A few things<br /><em className="text-muted-foreground">we&apos;ve made.</em></h2></div><span className="hidden font-mono text-xs text-muted-foreground md:block">(01 — 04)</span></div>
-           <div className="grid gap-10 md:grid-cols-4">{projects.map((project, index) => <article key={project.name} className="group"><a href={project.link} target="_blank" rel="noreferrer" className="block"><div className="relative aspect-[4/5] overflow-hidden bg-muted"><img src={project.image} alt={project.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /><div className="absolute inset-6 border border-background/30"><div className="absolute bottom-5 left-5 right-5 flex justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-background/75"><span>Case study {String(index + 1).padStart(2, '0')}</span><ArrowUpRight size={14} /></div></div><div className="absolute left-1/2 top-1/2 size-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-background/40 transition-transform duration-500 group-hover:scale-125" /></div><div className="flex justify-between gap-4 pt-4 text-sm"><div><h3 className="font-medium">{project.name}</h3><p className="mt-1 text-muted-foreground">{project.type}</p></div><span className="text-muted-foreground">{project.year}</span></div></a></article>)}</div>
+          <div className="mb-12 flex items-end justify-between gap-6"><div><p className="label">Selected work</p><h2 className="mt-4 font-serif text-5xl tracking-[-0.06em] md:text-7xl">A few things<br /><em className="text-muted-foreground">we&apos;ve made.</em></h2></div><span className="hidden font-mono text-xs text-muted-foreground md:block">(01 — 04)</span></div>
+          <div className="grid gap-10 md:grid-cols-4">{projects.map((project, index) => <article key={project.name} className="group"><a href={project.link} target="_blank" rel="noreferrer" className="block"><div className="relative aspect-[4/5] overflow-hidden bg-muted"><img src={project.image} alt={project.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /><div className="absolute inset-6 border border-background/30"><div className="absolute bottom-5 left-5 right-5 flex justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-background/75"><span>Case study {String(index + 1).padStart(2, '0')}</span><ArrowUpRight size={14} /></div></div><div className="absolute left-1/2 top-1/2 size-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-background/40 transition-transform duration-500 group-hover:scale-125" /></div><div className="flex justify-between gap-4 pt-4 text-sm"><div><h3 className="font-medium">{project.name}</h3><p className="mt-1 text-muted-foreground">{project.type}</p></div><span className="text-muted-foreground">{project.year}</span></div></a></article>)}</div>
         </div>
       </section>
 
@@ -81,8 +81,19 @@ export default function Page() {
       <section id="contact" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-40 lg:px-12"><p className="label">Have a good one?</p><div className="mt-6 flex flex-col justify-between gap-10 md:flex-row md:items-end"><h2 className="max-w-4xl font-serif text-6xl leading-[0.9] tracking-[-0.07em] md:text-8xl">Let&apos;s make<br /><em className="text-muted-foreground">something matter.</em></h2><a href="mailto:sebat@oriix.net" className="group flex shrink-0 items-center gap-3 rounded-full bg-foreground px-6 py-4 text-background transition-transform hover:-translate-y-1">sebat@oriix.net <ArrowUpRight size={17} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></a></div></section>
 
       <footer className="mx-auto flex max-w-7xl flex-col gap-4 border-t border-border px-5 py-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between md:px-8 lg:px-12"><span>© 2025 ሰባትAI studio</span><div className="flex gap-6"><a href="#top" className="hover:text-foreground">Back to top</a><a href="mailto:sebat@oriix.net" className="hover:text-foreground">Email us</a></div></footer>
+      <a
+        href="https://t.me/Oriix_Support"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-[#0088cc] text-white shadow-lg transition-transform hover:scale-110 hover:shadow-xl"
+        aria-label="Contact Support on Telegram"
+      >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 10.58 15.82 14.53 15.48 16.36C15.33 17.13 15.04 17.39 14.77 17.42C14.17 17.47 13.71 17.02 13.13 16.64C12.22 16.04 11.71 15.67 10.82 15.08C9.82 14.42 10.47 14.06 11.05 13.45C11.2 13.3 13.82 10.92 13.87 10.7C13.88 10.67 13.88 10.6 13.85 10.57C13.81 10.54 13.75 10.55 13.71 10.56C13.65 10.58 12.65 11.24 10.7 12.56C10.42 12.75 10.16 12.85 9.92 12.84C9.66 12.83 9.17 12.7 8.8 12.58C8.36 12.44 8.01 12.36 8.04 12.11C8.06 11.98 8.24 11.85 8.58 11.71C11.73 10.33 13.83 9.45 14.88 9.02C15.88 8.6 16.08 8.53 16.21 8.53C16.24 8.53 16.31 8.54 16.35 8.57C16.39 8.6 16.41 8.64 16.42 8.69C16.42 8.73 16.41 8.79 16.4 8.85L16.64 8.8Z" fill="currentColor"/>
+        </svg>
+      </a>
     </main>
   )
 }
 
- 
+
