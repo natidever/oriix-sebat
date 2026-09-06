@@ -1,7 +1,8 @@
 'use client'
 
-import { ArrowUpRight, CheckCircle2, ChevronLeft, FileText, Upload, X } from 'lucide-react'
+import { ArrowUpRight, CheckCircle2, ChevronLeft, FileText, Loader2, Upload, X } from 'lucide-react'
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { supabase } from '@/lib/supabase'
 
 type Step = 1 | 2 | 3
 
@@ -11,9 +12,8 @@ type FormState = {
   phone: string
   company: string
   industry: string
+  customIndustry: string
   brandName: string
-  hasExistingSite: 'yes' | 'no' | ''
-  inspirationUrl: string
   inspirationNotes: string
   detailsMode: 'text' | 'file'
   detailsText: string
@@ -26,9 +26,8 @@ const initialState: FormState = {
   phone: '',
   company: '',
   industry: '',
+  customIndustry: '',
   brandName: '',
-  hasExistingSite: '',
-  inspirationUrl: '',
   inspirationNotes: '',
   detailsMode: 'text',
   detailsText: '',
@@ -54,6 +53,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
   const [form, setForm] = useState<FormState>(initialState)
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
   const [isDragging, setIsDragging] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string>('')
   const [submittedAt, setSubmittedAt] = useState<string>('')
   const dialogRef = useRef<HTMLDivElement>(null)
   const firstFieldRef = useRef<HTMLInputElement>(null)
@@ -79,6 +80,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
       setForm(initialState)
       setErrors({})
       setSubmittedAt('')
+      setIsSubmitting(false)
+      setSubmitError('')
     }, 300)
   }
 
@@ -103,17 +106,10 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
       }
     } else if (s === 2) {
       if (!form.industry) next.industry = 'Pick one.'
+      else if (form.industry === 'Other' && !form.customIndustry.trim()) {
+        next.customIndustry = 'Specify your industry.'
+      }
       if (!form.brandName.trim()) next.brandName = 'Required.'
-      if (!form.hasExistingSite) next.hasExistingSite = 'Pick one.'
-      if (form.hasExistingSite === 'yes' && !form.inspirationUrl.trim()) {
-        next.inspirationUrl = 'Drop a URL.'
-      }
-      if (
-        form.inspirationUrl.trim() &&
-        !/^https?:\/\/.+\..+/.test(form.inspirationUrl)
-      ) {
-        next.inspirationUrl = 'Use a full URL (https://…).'
-      }
       if (form.detailsMode === 'text') {
         if (!form.detailsText.trim() || form.detailsText.trim().length < 20) {
           next.detailsText = 'Give us a bit more to work with.'
@@ -132,12 +128,17 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
   }
 
   function back() {
-    if (step > 1) setStep((s) => (s - 1) as Step)
+    if (step > 1) {
+      setSubmitError('')
+      setStep((s) => (s - 1) as Step)
+    }
   }
 
+  const ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
+
   function onFile(file: File | null) {
-    if (file && file.type !== 'application/pdf') {
-      setErrors((e) => ({ ...e, detailsFile: 'PDF only.' }))
+    if (file && !ALLOWED_FILE_TYPES.includes(file.type)) {
+      setErrors((e) => ({ ...e, detailsFile: 'Only PDF, JPG, and PNG files are allowed.' }))
       update('detailsFile', null)
       return
     }
@@ -149,13 +150,86 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
     update('detailsFile', file)
   }
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault()
     if (!validateStep(step)) return
-    if (step === 2) {
-      setSubmittedAt(new Date().toLocaleString())
+    if (step === 1) {
+      setStep(2)
+      return
     }
-    setStep((s) => (s + 1) as Step)
+
+    if (step === 2) {
+      setIsSubmitting(true)
+      setSubmitError('')
+
+      try {
+        let projectDescription:
+          | { type: 'text'; content: string }
+          | { type: 'file'; file_url: string; file_name: string }
+
+        if (form.detailsMode === 'text') {
+          projectDescription = {
+            type: 'text',
+            content: form.detailsText.trim(),
+          }
+        } else {
+          if (!form.detailsFile) {
+            setErrors((err) => ({ ...err, detailsFile: 'Upload a PDF file.' }))
+            setIsSubmitting(false)
+            return
+          }
+
+          const uploadFormData = new FormData()
+          uploadFormData.append('file', form.detailsFile)
+
+          const uploadRes = await fetch('/api/upload', {
+            method: 'POST',
+            body: uploadFormData,
+          })
+
+          const uploadJson = await uploadRes.json()
+
+          if (!uploadRes.ok || !uploadJson.secure_url) {
+            throw new Error(uploadJson.error || 'Failed to upload file. Please try again.')
+          }
+
+          projectDescription = {
+            type: 'file',
+            file_url: uploadJson.secure_url,
+            file_name: uploadJson.file_name || form.detailsFile.name,
+          }
+        }
+
+        const selectedIndustry =
+          form.industry === 'Other' && form.customIndustry.trim()
+            ? form.customIndustry.trim()
+            : form.industry
+
+        const { error: insertError } = await supabase.from('sebat').insert([
+          {
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone_number: form.phone.trim() || null,
+            industry: selectedIndustry || null,
+            brand_name: form.brandName.trim() || null,
+            inspiration_website: form.inspirationNotes.trim() || null,
+            project_description: projectDescription,
+          },
+        ])
+
+        if (insertError) {
+          throw new Error(insertError.message || 'Failed to save project brief.')
+        }
+
+        setSubmittedAt(new Date().toLocaleString())
+        setStep(3)
+      } catch (err: any) {
+        console.error('Supabase submission error:', err)
+        setSubmitError(err?.message || 'Failed to submit brief. Please try again.')
+      } finally {
+        setIsSubmitting(false)
+      }
+    }
   }
 
   const phaseMeta = [
@@ -326,7 +400,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                           sub="A few honest details. Long enough that we do not have to chase you."
                         />
                         <div className="mt-10 space-y-9">
-                          <Field label="Industry" required error={errors.industry}>
+                          <Field label="Industry" required error={errors.industry || errors.customIndustry}>
                             <div className="flex flex-wrap gap-2">
                               {industries.map((ind) => {
                                 const active = form.industry === ind
@@ -334,10 +408,15 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                   <button
                                     key={ind}
                                     type="button"
-                                    onClick={() => update('industry', ind)}
+                                    onClick={() => {
+                                      update('industry', ind)
+                                      if (ind !== 'Other') {
+                                        update('customIndustry', '')
+                                      }
+                                    }}
                                     className={`rounded-full border px-4 py-2 text-xs transition-colors ${active
-                                        ? 'border-foreground bg-foreground text-background'
-                                        : 'border-border bg-background text-foreground hover:border-foreground'
+                                      ? 'border-foreground bg-foreground text-background'
+                                      : 'border-border bg-background text-foreground hover:border-foreground'
                                       }`}
                                   >
                                     {ind}
@@ -345,6 +424,18 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                 )
                               })}
                             </div>
+                            {form.industry === 'Other' && (
+                              <div className="mt-3">
+                                <input
+                                  type="text"
+                                  value={form.customIndustry}
+                                  onChange={(e) => update('customIndustry', e.target.value)}
+                                  placeholder="Enter your industry"
+                                  className={inputClass(!!errors.customIndustry)}
+                                  autoFocus
+                                />
+                              </div>
+                            )}
                           </Field>
 
                           <Field label="Brand name" required error={errors.brandName}>
@@ -357,43 +448,15 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                             />
                           </Field>
 
-                          <Field label="Already have a website?" required error={errors.hasExistingSite}>
-                            <Segmented
-                              value={form.hasExistingSite}
-                              onChange={(v) => update('hasExistingSite', v as 'yes' | 'no' | '')}
-                              options={[
-                                { value: 'yes', label: 'Yes, give us the URL' },
-                                { value: 'no', label: 'No, starting fresh' },
-                              ]}
-                            />
-                          </Field>
-
-                          {form.hasExistingSite === 'yes' && (
-                            <Field
-                              label="Current website"
-                              required
-                              hint="We will only look at it for context."
-                              error={errors.inspirationUrl}
-                            >
-                              <input
-                                type="url"
-                                value={form.inspirationUrl}
-                                onChange={(e) => update('inspirationUrl', e.target.value)}
-                                placeholder="https://yourbrand.com"
-                                className={inputClass(!!errors.inspirationUrl)}
-                              />
-                            </Field>
-                          )}
-
                           <Field
-                            label="Sites you admire"
+                            label="Sites you want us to take inspiration from"
                             hint="Optional · separate by comma"
                           >
                             <textarea
                               rows={2}
                               value={form.inspirationNotes}
                               onChange={(e) => update('inspirationNotes', e.target.value)}
-                              placeholder="linear.app, apple.com, are.na"
+                              placeholder="babidental.com, feres.com"
                               className={`${inputClass(false)} resize-none leading-6`}
                             />
                           </Field>
@@ -410,8 +473,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                   type="button"
                                   onClick={() => update('detailsMode', 'text')}
                                   className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-xs transition-colors ${form.detailsMode === 'text'
-                                      ? 'bg-foreground text-background'
-                                      : 'bg-background text-foreground hover:bg-secondary'
+                                    ? 'bg-foreground text-background'
+                                    : 'bg-background text-foreground hover:bg-secondary'
                                     }`}
                                 >
                                   <FileText size={13} /> Write it
@@ -420,8 +483,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                   type="button"
                                   onClick={() => update('detailsMode', 'file')}
                                   className={`flex flex-1 items-center justify-center gap-2 border-l border-border px-4 py-3 text-xs transition-colors ${form.detailsMode === 'file'
-                                      ? 'bg-foreground text-background'
-                                      : 'bg-background text-foreground hover:bg-secondary'
+                                    ? 'bg-foreground text-background'
+                                    : 'bg-background text-foreground hover:bg-secondary'
                                     }`}
                                 >
                                   <Upload size={13} /> Upload PDF
@@ -451,24 +514,40 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                       </div>
                     )}
 
+                    {submitError && (
+                      <div className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs leading-5 text-destructive">
+                        {submitError}
+                      </div>
+                    )}
+
                     <div className="mt-12 flex items-center justify-between gap-3 border-t border-border pt-6">
                       <button
                         type="button"
                         onClick={back}
-                        disabled={step === 1}
+                        disabled={step === 1 || isSubmitting}
                         className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-0"
                       >
                         <ChevronLeft size={14} /> Back
                       </button>
                       <button
                         type="submit"
-                        className="group inline-flex min-w-44 items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm text-background transition-transform hover:-translate-y-0.5"
+                        disabled={isSubmitting}
+                        className="group inline-flex min-w-44 items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm text-background transition-transform hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-60"
                       >
-                        {step === 2 ? 'Send brief' : 'Continue'}
-                        <ArrowUpRight
-                          size={14}
-                          className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                        />
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 size={15} className="animate-spin" />
+                            Sending brief...
+                          </>
+                        ) : (
+                          <>
+                            {step === 2 ? 'Send brief' : 'Continue'}
+                            <ArrowUpRight
+                              size={14}
+                              className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                            />
+                          </>
+                        )}
                       </button>
                     </div>
                   </form>
@@ -490,7 +569,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                     <dl className="mt-10 w-full divide-y divide-border border-y border-border text-left text-sm">
                       <Row label="Submitted">{submittedAt}</Row>
                       <Row label="Reference">
-                        {form.brandName} · {form.industry}
+                        {form.brandName} · {form.industry === 'Other' && form.customIndustry ? form.customIndustry : form.industry}
                       </Row>
                       <Row label="Reply by">Within 24 hours</Row>
                     </dl>
@@ -622,16 +701,11 @@ function DropZone({
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
 
+  const ACCEPTED = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
+
   function handleFiles(list: FileList | null) {
     const f = list?.[0] ?? null
     if (!f) return
-    if (f.type !== 'application/pdf') {
-      onFile(null)
-      setTimeout(() => {
-        const evt = new CustomEvent('dzerr')
-      }, 0)
-      return
-    }
     onFile(f)
   }
 
@@ -651,8 +725,8 @@ function DropZone({
           handleFiles(e.dataTransfer.files)
         }}
         className={`flex w-full flex-col items-center justify-center gap-3 border border-dashed px-6 py-12 text-center transition-colors ${isDragging
-            ? 'border-foreground bg-secondary'
-            : 'border-border bg-background hover:border-foreground'
+          ? 'border-foreground bg-secondary'
+          : 'border-border bg-background hover:border-foreground'
           }`}
       >
         <Upload size={18} className="text-muted-foreground" />
@@ -668,16 +742,16 @@ function DropZone({
           </>
         ) : (
           <>
-            <p className="text-sm text-foreground">Drop a PDF here, or click to browse</p>
+            <p className="text-sm text-foreground">Drop a file here, or click to browse</p>
             <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-              Up to 10 MB · PDF only
+              Up to 10 MB · PDF, JPG, or PNG
             </p>
           </>
         )}
         <input
           ref={inputRef}
           type="file"
-          accept="application/pdf"
+          accept="application/pdf,image/jpeg,image/jpg,image/png"
           className="hidden"
           onChange={(e: ChangeEvent<HTMLInputElement>) => handleFiles(e.target.files)}
         />
