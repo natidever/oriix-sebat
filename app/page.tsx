@@ -35,7 +35,7 @@ export default function Page() {
         </StartProjectForm>
       </header>
 
-      <section id="top" className="mx-auto flex min-h-[calc(100svh-80px)] max-w-7xl flex-col items-center px-5 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6 lg:px-12">
+      <section id="top" className="mx-auto flex max-w-7xl flex-col items-center px-5 pb-6 pt-4 md:min-h-[calc(100svh-80px)] md:px-8 md:pb-8 md:pt-6 lg:px-12">
         <div className="flex max-w-3xl flex-col items-center text-center">
           <h1 className="max-w-3xl font-serif text-3xl leading-[0.94] tracking-[-0.06em] text-balance sm:text-4xl md:text-5xl lg:text-6xl">እንከን የለሽ ጥራት፡ <em className="text-muted-foreground">የማይታመን ዋጋ</em></h1>
           <p className="mt-3 max-w-2xl text-base font-medium leading-6 text-foreground md:text-lg">We build your websites in 48 hours. If you don't love it, you don't pay.</p>
@@ -95,4 +95,3 @@ export default function Page() {
     </main>
   )
 }
-
