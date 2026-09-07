@@ -49,12 +49,12 @@ export default function Page() {
               <div className="absolute inset-0 bg-black/20" />
               <div className="absolute left-5 top-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/90 md:left-8 md:top-8">ሰባትAI / Showreel 01</div>
               <div className="absolute bottom-5 left-5 max-w-sm text-white md:bottom-8 md:left-8"><p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70">Play 01:42</p></div>
-              <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
+              <span className="absolute left-1/2 top-1/2 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-primary-foreground transition-transform group-hover:scale-110"><Play size={21} fill="currentColor" /></span>
               <span className="absolute bottom-5 right-5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/70 md:bottom-8 md:right-8">Sound on · Click to play</span>
             </button>
           )}
           {hasInteracted && (!isPlaying || showControls) && (
-            <button type="button" aria-label={isPlaying ? 'Pause showreel' : 'Play showreel'} onClick={() => { if (isPlaying) { videoRef.current?.pause() } else { const v = videoRef.current; if (v) { if (hasEnded) v.currentTime = 0; v.play() } } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition-all duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
+            <button type="button" aria-label={isPlaying ? 'Pause showreel' : 'Play showreel'} onClick={() => { if (isPlaying) { videoRef.current?.pause() } else { const v = videoRef.current; if (v) { if (hasEnded) v.currentTime = 0; v.play() } } }} className="absolute left-1/2 top-1/2 z-20 flex size-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-primary-foreground transition-all duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground">
               {isPlaying ? <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg> : <Play size={21} fill="currentColor" />}
             </button>
           )}
@@ -95,5 +95,4 @@ export default function Page() {
     </main>
   )
 }
-
 
