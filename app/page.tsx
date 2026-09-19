@@ -1,8 +1,8 @@
 'use client'
 
 import { ArrowUpRight, Play, Plus } from 'lucide-react'
+import Link from 'next/link'
 import { useRef, useState } from 'react'
-import StartProjectForm from './start-project-form'
 
 const projects = [
   { name: 'Aaron Events', type: 'Orthodox wedding planner', year: '2025', image: '/projects/aaron-events.png', link: 'https://aaron-events.netlify.app/' },
@@ -28,11 +28,11 @@ export default function Page() {
           <a className="transition-colors hover:text-foreground" href="#approach">Approach</a>
           <a className="transition-colors hover:text-foreground" href="#studio">Studio</a>
         </nav>
-        <StartProjectForm>
-          <a className="group flex items-center gap-2 rounded-full border border-foreground bg-foreground px-4 py-2 text-sm text-background transition-transform hover:-translate-y-0.5">
+        <div className="flex items-center gap-5">
+          <Link href="/start-project" className="group flex items-center gap-2 rounded-full border border-foreground bg-foreground px-4 py-2 text-sm text-background transition-transform hover:-translate-y-0.5">
             Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
-        </StartProjectForm>
+          </Link>
+        </div>
       </header>
 
       <section id="top" className="mx-auto flex max-w-7xl flex-col items-center px-5 pb-6 pt-4 md:min-h-[calc(100svh-80px)] md:px-8 md:pb-8 md:pt-6 lg:px-12">
@@ -61,9 +61,7 @@ export default function Page() {
         </div>
 
         <div className="mt-3 flex w-full max-w-5xl flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <StartProjectForm>
-            <a className="group inline-flex min-w-56 items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5">Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
-          </StartProjectForm>
+          <Link href="/start-project" className="group inline-flex min-w-56 items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5">Start a project <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></Link>
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { ArrowUpRight, CheckCircle2, ChevronLeft, FileText, Loader2, Upload, X } from 'lucide-react'
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { supabase } from '@/lib/supabase'
 
 type Step = 1 | 2 | 3
@@ -14,6 +14,8 @@ type FormState = {
   industry: string
   customIndustry: string
   brandName: string
+  mainCustomer: string
+  websiteSections: string[]
   inspirationNotes: string
   detailsMode: 'text' | 'file'
   detailsText: string
@@ -28,6 +30,8 @@ const initialState: FormState = {
   industry: '',
   customIndustry: '',
   brandName: '',
+  mainCustomer: '',
+  websiteSections: [],
   inspirationNotes: '',
   detailsMode: 'text',
   detailsText: '',
@@ -47,8 +51,24 @@ const industries = [
   'Other',
 ]
 
-export default function StartProjectForm({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false)
+const websiteSectionOptions = [
+  'Home',
+  'About Us',
+  'Services',
+  'Products',
+  'Projects / Portfolio',
+  'Team',
+  'Testimonials',
+  'Blog / News',
+  'FAQs',
+  'Contact Us',
+  'Careers',
+  'Gallery',
+  'Partners / Clients',
+  'Other',
+]
+
+export default function StartProjectForm() {
   const [step, setStep] = useState<Step>(1)
   const [form, setForm] = useState<FormState>(initialState)
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
@@ -56,34 +76,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string>('')
   const [submittedAt, setSubmittedAt] = useState<string>('')
-  const dialogRef = useRef<HTMLDivElement>(null)
   const firstFieldRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (!isOpen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
-    }
-    document.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
-    setTimeout(() => firstFieldRef.current?.focus(), 60)
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
-  function close() {
-    setIsOpen(false)
-    setTimeout(() => {
-      setStep(1)
-      setForm(initialState)
-      setErrors({})
-      setSubmittedAt('')
-      setIsSubmitting(false)
-      setSubmitError('')
-    }, 300)
-  }
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }))
@@ -110,6 +103,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
         next.customIndustry = 'Specify your industry.'
       }
       if (!form.brandName.trim()) next.brandName = 'Required.'
+      if (!form.mainCustomer.trim()) next.mainCustomer = 'Required.'
+      if (form.websiteSections.length === 0) next.websiteSections = 'Select at least one section.'
       if (form.detailsMode === 'text') {
         if (!form.detailsText.trim() || form.detailsText.trim().length < 20) {
           next.detailsText = 'Give us a bit more to work with.'
@@ -212,6 +207,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
             phone_number: form.phone.trim() || null,
             industry: selectedIndustry || null,
             brand_name: form.brandName.trim() || null,
+            main_customers: form.mainCustomer.trim() || null,
+            website_section: form.websiteSections,
             inspiration_website: form.inspirationNotes.trim() || null,
             project_description: projectDescription,
           },
@@ -239,33 +236,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
   ]
 
   return (
-    <>
-      <span onClick={() => setIsOpen(true)} className="contents cursor-pointer">
-        {children}
-      </span>
-
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-stretch justify-center bg-ink/50 backdrop-blur-md md:items-center md:p-6"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) close()
-          }}
-        >
-          <div
-            ref={dialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="start-project-title"
-            className="relative flex h-full w-full max-w-5xl flex-col overflow-hidden border border-border bg-background text-foreground shadow-[0_30px_80px_-20px_rgba(32,33,29,0.4)] md:h-auto md:max-h-[88vh] md:flex-row"
-          >
-            <button
-              type="button"
-              onClick={close}
-              aria-label="Close"
-              className="absolute right-4 top-4 z-20 flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-foreground hover:text-foreground md:right-5 md:top-5"
-            >
-              <X size={14} />
-            </button>
+    <div className="mx-auto flex w-full max-w-5xl justify-center px-5 pb-16 pt-6 md:px-8 md:pb-24 lg:px-12">
+      <div className="relative flex w-full flex-col border border-border bg-background text-foreground shadow-[0_30px_80px_-20px_rgba(32,33,29,0.4)] md:flex-row">
 
             {/* Step rail */}
             <aside className="relative hidden w-72 shrink-0 border-r border-border bg-secondary/40 p-8 md:flex md:flex-col md:justify-between">
@@ -316,7 +288,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
             </aside>
 
             {/* Main panel */}
-            <div className="flex min-h-0 flex-1 flex-col">
+            <div className="flex flex-1 flex-col">
               {/* Mobile header */}
               <div className="border-b border-border px-6 pb-5 pt-6 md:hidden">
                 <p className="label">Start a project</p>
@@ -334,7 +306,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                 />
               </div>
 
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1">
                 {step !== 3 && (
                   <form onSubmit={onSubmit} className="mx-auto max-w-2xl px-6 py-10 md:px-12 md:py-14">
                     {step === 1 && (
@@ -448,6 +420,53 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                             />
                           </Field>
 
+                          <Field label="Who are your main customers?" required error={errors.mainCustomer}>
+                            <textarea
+                              rows={3}
+                              value={form.mainCustomer}
+                              onChange={(e) => update('mainCustomer', e.target.value)}
+                              placeholder="Describe the people or businesses you want to reach."
+                              className={`${inputClass(!!errors.mainCustomer)} resize-none leading-6`}
+                            />
+                          </Field>
+
+                          <Field
+                            label="Which sections would you like on your website?"
+                            required
+                            error={errors.websiteSections}
+                          >
+                            <div className="grid gap-2 sm:grid-cols-2">
+                              {websiteSectionOptions.map((section) => {
+                                const selected = form.websiteSections.includes(section)
+                                return (
+                                  <label
+                                    key={section}
+                                    className={`flex cursor-pointer items-center gap-3 border px-4 py-3 text-sm transition-colors ${
+                                      selected
+                                        ? 'border-foreground bg-foreground text-background'
+                                        : 'border-border bg-background text-foreground hover:border-foreground'
+                                    }`}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={selected}
+                                      onChange={() =>
+                                        update(
+                                          'websiteSections',
+                                          selected
+                                            ? form.websiteSections.filter((item) => item !== section)
+                                            : [...form.websiteSections, section],
+                                        )
+                                      }
+                                      className="size-4 accent-foreground"
+                                    />
+                                    {section}
+                                  </label>
+                                )
+                              })}
+                            </div>
+                          </Field>
+
                           <Field
                             label="Sites you want us to take inspiration from"
                             hint="Optional · separate by comma"
@@ -496,7 +515,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                                   rows={7}
                                   value={form.detailsText}
                                   onChange={(e) => update('detailsText', e.target.value)}
-                                  placeholder="Pages you need, the mood, references, the deadline, anything we should know before we start."
+                                  placeholder="what will be in those page, the content, in detail."
                                   className={`${inputClass(!!errors.detailsText)} resize-y leading-7`}
                                 />
                               ) : (
@@ -575,7 +594,7 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                     </dl>
                     <button
                       type="button"
-                      onClick={close}
+                      onClick={() => window.location.assign('/')}
                       className="mt-10 inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
                     >
                       Close <ArrowUpRight size={13} />
@@ -584,10 +603,8 @@ export default function StartProjectForm({ children }: { children: React.ReactNo
                 )}
               </div>
             </div>
-          </div>
-        </div>
-      )}
-    </>
+      </div>
+    </div>
   )
 }
 
